@@ -12,6 +12,8 @@ routes.get('/courses', celebrate({
     }
 }), CourseController.index)
 
+routes.get('/coursesNoPagination', CourseController.indexNoPagination)
+
 routes.get('/courses/:id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         id: Joi.string().length(36).required()

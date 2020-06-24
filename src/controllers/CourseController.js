@@ -10,12 +10,22 @@ module.exports = {
 
         const [count] = await connection('courses').count()
 
+        response.header('X-Total-Count', count['count(*)'])
+
+        const totalPages = Math.ceil(count['count(*)'] / 5)
+        response.header('X-Total-Pages', totalPages)
+
         const courses = await connection('courses')
             .limit(5)
             .offset((page - 1) * 5)
             .select('*')
 
-        response.header('X-Total-Count', count['count(*)'])
+        return response.json(courses)
+    },
+
+    async indexNoPagination(request, response) {
+        const courses = await connection('courses')
+            .select('*')
 
         return response.json(courses)
     },

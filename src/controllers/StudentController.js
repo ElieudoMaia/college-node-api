@@ -17,12 +17,17 @@ module.exports = {
 
         response.header('X-Total-Count', count['count(*)'])
 
+        const totalPages = Math.ceil(count['count(*)'] / 5)
+        response.header('X-Total-Pages', totalPages)
+
         return response.json(students)
     },
 
     async show(request, response) {
         const { id } = request.params
-        const student = await connection('students').where('id', id).select('*').first()
+        const student = await connection('students')
+            .join('courses', 'courses.id', '=', 'students.course_id')
+            .where('students.id', id).select(['students.*', 'courses.course_name']).first()
         return response.json(student)
     },
 
